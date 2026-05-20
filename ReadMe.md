@@ -73,7 +73,7 @@ kasikart/
 
 ## Live Site
 
-🔗 **https://kasikart.rf.gd**
+****
 
 ---
 
@@ -81,7 +81,7 @@ kasikart/
 
 KasiKart eliminates complicated interface barriers by treating buyers and sellers identically under a unified "Customer" framework.
 
-- **Role Fluidity:** Users dynamically navigate as buyer or seller within `account.php`
+- **Role Fluidity:** Users dynamically navigate as buyer or seller.
 - **Product Listing Engine:** Sellers input descriptions, prices (ZAR), inventory, and upload images
 - **Real-time Inventory Management:** Database updates product quantity automatically upon confirmation
 - **P2P Communication Hub (`chat.php`):** Direct localized chat between buyers and sellers
@@ -113,7 +113,7 @@ Designed purposefully for localized township realities:
 ## Getting Started
 
 ### Prerequisites
-- XAMPP / WAMP with PHP 8+ and MySQL
+- XAMPP with PHP 8+ and MySQL
 - Git (for version control)
 
 ### Local Installation
