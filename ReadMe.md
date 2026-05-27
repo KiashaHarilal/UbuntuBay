@@ -1,4 +1,4 @@
-# KasiKart: C2C E-Commerce Platform for the South African Informal Economy
+# UbuntuBay: C2C E-Commerce Platform for the South African Informal Economy
 
 KasiKart is a lightweight, mobile-responsive Consumer-to-Consumer (C2C) web application explicitly engineered to empower South African informal traders, street vendors, and township entrepreneurs. It bridges the gap between complex backend digital commerce and an intuitive, accessible user interface, allowing everyday users to safely list products, chat directly with local buyers, arrange localized shipping options, and update live inventory without requiring technical expertise.
 
@@ -7,7 +7,7 @@ KasiKart is a lightweight, mobile-responsive Consumer-to-Consumer (C2C) web appl
 ## Project Architecture & Directory Structure
 
 The project code is organized cleanly into modular folders to guarantee separation of concerns, easy database configuration, and frictionless deployment to free cloud-hosting environments.
-kasikart/
+UbuntuBay/
 │
 ├── assets/
 │ ├── css/
@@ -51,7 +51,7 @@ kasikart/
 ├── delivery.php Logistics Selection Page for courier/pickup
 │
 ├── SQL/
-│ └── KasiKart_db.sql Relational database export script
+│ └── UbuntuBay_db.sql Relational database export script
 │
 └── uploads/
 ├── products/ Product images uploaded by vendors
