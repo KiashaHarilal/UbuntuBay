@@ -1,4 +1,5 @@
 <?php
+session_start(); // Added session_start() just in case it was missing from your snippet
 require_once '../includes/database.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
@@ -7,29 +8,20 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
 }
 
 if (isset($_GET['delete'])) {
-    $user_id = (int)$_GET['delete'];
-    if ($user_id != $_SESSION['user_id']) {
-        mysqli_query($conn, "DELETE FROM users WHERE user_id = $user_id");
-    }
-    header('Location: users.php');
+    $msg_id = (int)$_GET['delete'];
+    mysqli_query($conn, "DELETE FROM contact_messages WHERE message_id = $msg_id");
+    header('Location: contact_messages.php');
     exit();
 }
 
-if (isset($_GET['toggle'])) {
-    $user_id = (int)$_GET['toggle'];
-    mysqli_query($conn, "UPDATE users SET is_active = NOT is_active WHERE user_id = $user_id");
-    header('Location: users.php');
-    exit();
-}
-
-$users = mysqli_query($conn, "SELECT * FROM users ORDER BY created_at DESC");
+$messages = mysqli_query($conn, "SELECT * FROM contact_messages ORDER BY created_at DESC");
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Users - Admin</title>
+    <title>Contact Messages - Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -122,12 +114,10 @@ $users = mysqli_query($conn, "SELECT * FROM users ORDER BY created_at DESC");
         table { width: 100%; color: white; }
         th { text-align: left; padding: 12px; color: #ffd175; border-bottom: 1px solid rgba(255,255,255,0.1); }
         td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .message-preview { max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        .badge-active { background: rgba(40,167,69,0.2); color: #6bcb77; padding: 4px 10px; border-radius: 20px; font-size: 12px; }
-        .badge-inactive { background: rgba(220,53,69,0.2); color: #ff8a92; padding: 4px 10px; border-radius: 20px; font-size: 12px; }
-        .btn-sm { padding: 5px 12px; border-radius: 20px; text-decoration: none; font-size: 12px; display: inline-block; margin: 0 2px; }
-        .btn-toggle { background: rgba(255,209,117,0.2); color: #ffd175; }
-        .btn-delete { background: rgba(220,53,69,0.2); color: #ff8a92; }
+        .btn-delete { background: rgba(220,53,69,0.2); color: #ff8a92; padding: 5px 12px; border-radius: 20px; text-decoration: none; font-size: 12px; display: inline-block; }
+        .btn-delete:hover { background: rgba(220,53,69,0.4); }
         .back-link { color: #ffd175; text-decoration: none; margin-bottom: 20px; display: inline-block; }
 
         @media (max-width: 768px) { 
@@ -135,6 +125,7 @@ $users = mysqli_query($conn, "SELECT * FROM users ORDER BY created_at DESC");
             .sidebar { width: 100%; } 
             .nav-links { display: none; } 
             table { font-size: 12px; } 
+            .message-preview { max-width: 100px; } 
         }
     </style>
 </head>
@@ -159,37 +150,31 @@ $users = mysqli_query($conn, "SELECT * FROM users ORDER BY created_at DESC");
         <div class="sidebar">
             <h3>Admin Panel</h3>
             <a href="index.php">Dashboard</a>
-            <a href="users.php" class="active">Manage Users</a>
+            <a href="users.php">Manage Users</a>
             <a href="listings.php">Manage Listings</a>
-            <a href="contact_messages.php">Contact Messages</a>
+            <a href="contact_messages.php" class="active">Contact Messages</a>
             <a href="logout.php">Logout</a>
         </div>
 
         <div class="main-content">
             <div class="content-card">
                 <a href="index.php" class="back-link">← Back to Dashboard</a>
-                <h1>Manage Users</h1>
+                <h1>Contact Messages</h1>
                 <div style="overflow-x: auto;">
                     <table>
                         <thead>
-                            <tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Province</th><th>Status</th><th>Joined</th><th>Actions</th></tr>
+                            <tr><th>ID</th><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Date</th><th>Action</th></tr>
                         </thead>
                         <tbody>
-                            <?php while ($user = mysqli_fetch_assoc($users)): ?>
+                            <?php while ($msg = mysqli_fetch_assoc($messages)): ?>
                             <tr>
-                                <td><?php echo $user['user_id']; ?></td>
-                                <td><?php echo htmlspecialchars($user['name']); ?></td>
-                                <td><?php echo htmlspecialchars($user['email']); ?></td>
-                                <td><span style="background: rgba(209,149,36,0.2); padding: 4px 10px; border-radius: 20px;"><?php echo $user['role']; ?></span></td>
-                                <td><?php echo htmlspecialchars($user['province']); ?></td>
-                                <td><?php echo $user['is_active'] ? '<span class="badge-active">Active</span>' : '<span class="badge-inactive">Suspended</span>'; ?></td>
-                                <td><?php echo date('Y-m-d', strtotime($user['created_at'])); ?></td>
-                                <td>
-                                    <a href="?toggle=<?php echo $user['user_id']; ?>" class="btn-sm btn-toggle"><?php echo $user['is_active'] ? 'Suspend' : 'Activate'; ?></a>
-                                    <?php if ($user['user_id'] != $_SESSION['user_id']): ?>
-                                        <a href="?delete=<?php echo $user['user_id']; ?>" class="btn-sm btn-delete" onclick="return confirm('Delete this user?')">Delete</a>
-                                    <?php endif; ?>
-                                </td>
+                                <td><?php echo $msg['message_id']; ?></td>
+                                <td><?php echo htmlspecialchars($msg['name']); ?></td>
+                                <td><?php echo htmlspecialchars($msg['email']); ?></td>
+                                <td><?php echo htmlspecialchars($msg['subject']); ?></td>
+                                <td class="message-preview"><?php echo htmlspecialchars(substr($msg['message'], 0, 80)); ?>...</td>
+                                <td><?php echo $msg['created_at']; ?></td>
+                                <td><a href="?delete=<?php echo $msg['message_id']; ?>" class="btn-delete" onclick="return confirm('Delete this message?')">Delete</a></td>
                             </tr>
                             <?php endwhile; ?>
                         </tbody>

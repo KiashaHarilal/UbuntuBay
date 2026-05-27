@@ -1,61 +1,62 @@
-# KasiKart: C2C E-Commerce Platform for the South African Informal Economy
+# UbuntuBay: C2C E-Commerce Platform for the South African Informal Economy
 
-KasiKart is a lightweight, mobile-responsive Consumer-to-Consumer (C2C) web application explicitly engineered to empower South African informal traders, street vendors, and township entrepreneurs. It bridges the gap between complex backend digital commerce and an intuitive, accessible user interface, allowing everyday users to safely list products, chat directly with local buyers, arrange localized shipping options, and update live inventory without requiring technical expertise.
+UbuntuBay is a lightweight, mobile-responsive Consumer-to-Consumer (C2C) web application explicitly engineered to empower South African informal traders, street vendors, and township entrepreneurs. It bridges the gap between complex backend digital commerce and an intuitive, accessible user interface, allowing everyday users to safely list products, chat directly with local buyers, arrange localized shipping options, and update live inventory without requiring technical expertise.
 
 ---
 
 ## Project Architecture & Directory Structure
 
 The project code is organized cleanly into modular folders to guarantee separation of concerns, easy database configuration, and frictionless deployment to free cloud-hosting environments.
-kasikart/
+
+UbuntuBay/
 │
 ├── assets/
 │ ├── css/
-│ │ └── style.css Custom UI styling, layout definitions, and Bootstrap overrides
+│ │ └── style.css # Custom UI styling, Bootstrap overrides
 │ ├── js/
-│ │ ├── script.js Dynamic live-pricing calculation and front-end verification scripts
-│ │ └── chat.js Handles client-side AJAX/Fetch API for real-time chat
-│ └── images/ Static assets, system icons, and user upload storage
+│ │ ├── script.js # Live-pricing calculation, form validation
+│ │ └── chat.js # AJAX/Fetch API for real-time chat
+│ └── images/ # Static assets, icons, user uploads
 │
 ├── includes/
-│ ├── header.php Global application navbar, mobile toggle-menus
-│ ├── footer.php Global sticky footer with copyrights
-│ └── database.php Central MySQL database credentials and connection string
+│ ├── header.php # Global navbar, mobile toggle-menus
+│ ├── footer.php # Sticky footer with copyrights
+│ └── database.php # MySQL credentials & connection
 │
-├── admin/ Secure Administration Panel (RBAC Protected)
-│ ├── index.php Entry dashboard with admin security tokens and analytics
-│ ├── login.php High-security authorization portal for admin access
-│ ├── logout.php Terminates administrative control tokens
-│ ├── users.php Review profiles and moderate/suspend user entries
-│ ├── listings.php Inventory audit board to moderate active listings
-│ └── transactions.php Master tracking ledger for transaction flows
+├── admin/ # Secure Admin Panel (RBAC Protected)
+│ ├── index.php # Dashboard with analytics
+│ ├── login.php # Admin authorization portal
+│ ├── logout.php # Terminates admin session
+│ ├── users.php # Moderate/suspend user accounts
+│ ├── listings.php # Moderate active listings
+│ └── transactions.php # Master transaction ledger
 │
-├── diagrams/ Deliverable 2 Design Diagrams
-│ ├── use_case.png System Interaction Diagram
-│ ├── context_diagram.png DFD Level 0 Context Boundary Map
-│ ├── dfd_level1.png DFD Level 1 Detailed Process Map
-│ ├── eerd.png Enhanced Entity Relationship Database Diagram
-│ └── crc_cards.pdf Class Responsibility Collaborator Cards
-│
-├── index.php Platform Marketplace / Product Discovery Feed
-├── login.php Secure Unified Authentication Gateway
-├── logout.php Destroys active user session
-├── register.php New Account Registration Interface
-├── account.php Dynamic Profile Hub (Buyer/Seller switch)
-├── products.php Product Focus Page with images, descriptions, prices
-├── chat.php Real-time peer-to-peer communication screen
-├── about.php Platform vision, mission, and impact info
-├── checkout.php Transaction processing interface
-├── contact.php Centralized communication portal with support forms
-├── profile.php User settings panel for personal information
-├── delivery.php Logistics Selection Page for courier/pickup
+├── diagrams/ # Deliverable 2 Design Diagrams
+│ ├── use_case.png # System Interaction Diagram
+│ ├── context_diagram.png # DFD Level 0 Context Map
+│ ├── dfd_level1.png # DFD Level 1 Process Map
+│ ├── eerd.png # Enhanced E-R Database Diagram
+│ └── crc_cards.pdf # Class Responsibility Cards
 │
 ├── SQL/
-│ └── KasiKart_db.sql Relational database export script
+│ └── UbuntuBay_db.sql # Database export script
 │
-└── uploads/
-├── products/ Product images uploaded by vendors
-└── profiles/ User profile photos for accountability
+├── uploads/
+│ ├── products/ # Product images from vendors
+│ └── profiles/ # User profile photos
+│
+├── index.php # Marketplace / Product Discovery Feed
+├── login.php # Unified Authentication Gateway
+├── logout.php # Destroys user session
+├── register.php # New Account Registration
+├── account.php # Dynamic Profile Hub (Buyer/Seller)
+├── products.php # Product display with images/prices
+├── chat.php # Real-time P2P communication
+├── about.php # Platform vision & mission
+├── checkout.php # Transaction processing
+├── contact.php # Support & help desk
+├── profile.php # User settings panel
+└── delivery.php # Logistics (courier/pickup)
 
 
 ---
@@ -73,15 +74,15 @@ kasikart/
 
 ## Live Site
 
-🔗 **https://kasikart.rf.gd**
+ ****
 
 ---
 
 ## Unified Customer Experience (Buyer & Seller Dual-State)
 
-KasiKart eliminates complicated interface barriers by treating buyers and sellers identically under a unified "Customer" framework.
+UbuntuBay eliminates complicated interface barriers by treating buyers and sellers identically under a unified "Customer" framework.
 
-- **Role Fluidity:** Users dynamically navigate as buyer or seller within `account.php`
+- **Role Fluidity:** Users dynamically navigate as buyer or seller.
 - **Product Listing Engine:** Sellers input descriptions, prices (ZAR), inventory, and upload images
 - **Real-time Inventory Management:** Database updates product quantity automatically upon confirmation
 - **P2P Communication Hub (`chat.php`):** Direct localized chat between buyers and sellers
@@ -113,11 +114,11 @@ Designed purposefully for localized township realities:
 ## Getting Started
 
 ### Prerequisites
-- XAMPP / WAMP with PHP 8+ and MySQL
+- XAMPP with PHP 8+ and MySQL
 - Git (for version control)
 
 ### Local Installation
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/KiashaHarilal/KasiKart.git
+   git clone https://github.com/KiashaHarilal/UbuntuBay.git
