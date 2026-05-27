@@ -58,7 +58,6 @@ UbuntuBay/
 ├── profile.php # User settings panel
 └── delivery.php # Logistics (courier/pickup)
 
-
 ---
 
 ## Technology Stack
@@ -74,7 +73,7 @@ UbuntuBay/
 
 ## Live Site
 
- ****
+*Coming soon*
 
 ---
 
