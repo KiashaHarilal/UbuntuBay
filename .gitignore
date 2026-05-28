@@ -1,0 +1,6 @@
+.DS_Store
+Thumbs.db
+uploads/products/*
+uploads/profiles/*
+!uploads/products/.gitkeep
+!uploads/profiles/.gitkeep
