@@ -73,7 +73,7 @@ UbuntuBay/
 
 ## Live Site
 
-*Coming soon*
+*http://ubuntubayc2c.infinityfreeapp.com/index.php?i=1*
 
 ---
 
