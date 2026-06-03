@@ -51,7 +51,7 @@ UbuntuBay/
 ├── register.php # New Account Registration
 ├── account.php # Dynamic Profile Hub (Buyer/Seller)
 ├── products.php # Product display with images/prices
-├── chat.php # Real-time P2P communication
+├── profile.php # Real-time P2P communication
 ├── about.php # Platform vision & mission
 ├── checkout.php # Transaction processing
 ├── contact.php # Support & help desk
@@ -84,7 +84,7 @@ UbuntuBay eliminates complicated interface barriers by treating buyers and selle
 - **Role Fluidity:** Users dynamically navigate as buyer or seller.
 - **Product Listing Engine:** Sellers input descriptions, prices (ZAR), inventory, and upload images
 - **Real-time Inventory Management:** Database updates product quantity automatically upon confirmation
-- **P2P Communication Hub (`chat.php`):** Direct localized chat between buyers and sellers
+- **P2P Communication Hub (`profile.php`):** Direct localized chat between buyers and sellers on the messages tab
 
 ---
 
@@ -95,7 +95,7 @@ Designed purposefully for localized township realities:
 | Delivery Method | Description |
 |----------------|-------------|
 | **PikitUp Drop-off** | Low-cost, community-driven pickup centers for street vendors |
-| **Integrated Courier** | Standard courier with R80 local SA shipping fee |
+| **Integrated Courier** | Standard courier with R120 local SA shipping fee |
 | **Cash-on-Delivery (CoD)** | Cash handovers during safe local pickups |
 
 ---
