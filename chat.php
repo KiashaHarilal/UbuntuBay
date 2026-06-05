@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'includes/database.php';
 
 // Check if user is logged in
@@ -69,11 +70,7 @@ $users_result = mysqli_query($conn, $users_sql);
     <title>UbuntuBay - Messages</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -89,14 +86,17 @@ $users_result = mysqli_query($conn, $users_sql);
             background-image: linear-gradient(180deg, rgba(14, 25, 22, 0.85) 0%, rgba(18, 16, 13, 0.95) 100%);
         }
 
-        /* Navbar */
+        /* ── NAVBAR ── */
         .navbar-custom {
+            position: relative;
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: 50px;
             border: 1px solid rgba(255, 255, 255, 0.08);
             margin: 30px auto 0 auto;
             padding: 12px 30px;
+            z-index: 200;
             max-width: 1350px;
             width: calc(100% - 40px);
         }
@@ -127,29 +127,100 @@ $users_result = mysqli_query($conn, $users_sql);
             padding: 8px 14px;
             border-radius: 20px;
             font-size: 14px;
+            transition: all 0.2s;
         }
 
-        .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: white;
-        }
+        .nav-links a:hover { background: rgba(255,255,255,0.08); color: white; }
 
-        .btn-outline-light {
-            background: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        .btn-outline-light-custom {
+            background: rgba(255,255,255,0.05) !important;
+            border: 1px solid rgba(255,255,255,0.2) !important;
             border-radius: 20px !important;
             padding: 6px 16px !important;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 13px;
         }
 
         .btn-warning-custom {
-            background: rgba(209, 149, 36, 0.2) !important;
-            border: 1px solid rgba(209, 149, 36, 0.4) !important;
+            background: rgba(209,149,36,0.2) !important;
+            border: 1px solid rgba(209,149,36,0.4) !important;
             color: #ffd175 !important;
             border-radius: 20px !important;
             padding: 6px 16px !important;
+            text-decoration: none;
+            font-size: 13px;
         }
 
-        /* Chat Container */
+        /* ── HAMBURGER ── */
+        .hamburger-btn {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            cursor: pointer;
+            gap: 5px;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .hamburger-btn span {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger-btn.open span:nth-child(2) { opacity: 0; }
+        .hamburger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        /* ── MOBILE MENU ── */
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            right: 0;
+            background: rgba(15, 14, 14, 0.97);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 16px;
+            z-index: 999;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .mobile-menu.open { display: flex; }
+
+        .mobile-menu a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            display: block;
+            transition: background 0.2s;
+        }
+
+        .mobile-menu a:hover, .mobile-menu a:active { background: rgba(255,255,255,0.08); color: white; }
+
+        .mobile-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 6px 0; }
+
+        .mobile-auth { display: flex; gap: 8px; padding: 8px 0 4px 0; }
+        .mobile-auth a { flex: 1; text-align: center; padding: 10px; }
+
+        /* ── CHAT ── */
         .chat-container {
             flex: 1;
             padding: 40px 20px;
@@ -167,7 +238,6 @@ $users_result = mysqli_query($conn, $users_sql);
             min-height: 600px;
         }
 
-        /* Conversations Sidebar */
         .conversations-sidebar {
             width: 320px;
             border-right: 1px solid rgba(255, 255, 255, 0.1);
@@ -180,16 +250,9 @@ $users_result = mysqli_query($conn, $users_sql);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .sidebar-header h3 {
-            color: white;
-            font-size: 18px;
-            margin: 0;
-        }
+        .sidebar-header h3 { color: white; font-size: 18px; margin: 0; }
 
-        .conversations-list {
-            flex: 1;
-            overflow-y: auto;
-        }
+        .conversations-list { flex: 1; overflow-y: auto; }
 
         .conversation-item {
             display: flex;
@@ -201,222 +264,133 @@ $users_result = mysqli_query($conn, $users_sql);
             text-decoration: none;
         }
 
-        .conversation-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .conversation-item.active {
-            background: rgba(209, 149, 36, 0.2);
-            border-left: 3px solid #ffd175;
-        }
+        .conversation-item:hover { background: rgba(255,255,255,0.08); }
+        .conversation-item.active { background: rgba(209,149,36,0.2); border-left: 3px solid #ffd175; }
 
         .conversation-avatar {
-            width: 50px;
-            height: 50px;
-            background: rgba(209, 149, 36, 0.3);
+            width: 50px; height: 50px;
+            background: rgba(209,149,36,0.3);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             font-size: 24px;
         }
 
-        .conversation-info {
-            flex: 1;
-        }
-
-        .conversation-name {
-            color: white;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
+        .conversation-info { flex: 1; }
+        .conversation-name { color: white; font-weight: 600; margin-bottom: 5px; }
         .conversation-last {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 12px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 180px;
+            color: rgba(255,255,255,0.5); font-size: 12px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;
         }
+        .conversation-time { font-size: 11px; color: rgba(255,255,255,0.4); }
 
-        .conversation-time {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        /* Chat Area */
-        .chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
+        .chat-area { flex: 1; display: flex; flex-direction: column; }
 
         .chat-header {
             padding: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; gap: 12px;
         }
 
         .chat-header-avatar {
-            width: 45px;
-            height: 45px;
-            background: rgba(209, 149, 36, 0.3);
+            width: 45px; height: 45px;
+            background: rgba(209,149,36,0.3);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             font-size: 22px;
         }
 
-        .chat-header-info h4 {
-            color: white;
-            margin: 0;
-            font-size: 18px;
-        }
-
-        .chat-header-info p {
-            color: rgba(255, 255, 255, 0.5);
-            margin: 0;
-            font-size: 12px;
-        }
+        .chat-header-info h4 { color: white; margin: 0; font-size: 18px; }
+        .chat-header-info p { color: rgba(255,255,255,0.5); margin: 0; font-size: 12px; }
 
         .messages-area {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            flex: 1; padding: 20px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 15px;
         }
 
-        .message {
-            display: flex;
-            flex-direction: column;
-            max-width: 70%;
-        }
-
-        .message-sent {
-            align-self: flex-end;
-        }
-
-        .message-received {
-            align-self: flex-start;
-        }
+        .message { display: flex; flex-direction: column; max-width: 70%; }
+        .message-sent { align-self: flex-end; }
+        .message-received { align-self: flex-start; }
 
         .message-bubble {
-            padding: 10px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            word-wrap: break-word;
+            padding: 10px 16px; border-radius: 20px;
+            font-size: 14px; word-wrap: break-word;
         }
 
         .message-sent .message-bubble {
-            background: rgba(209, 149, 36, 0.85);
-            color: white;
-            border-bottom-right-radius: 4px;
+            background: rgba(209,149,36,0.85); color: white; border-bottom-right-radius: 4px;
         }
 
         .message-received .message-bubble {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-bottom-left-radius: 4px;
+            background: rgba(255,255,255,0.1); color: white; border-bottom-left-radius: 4px;
         }
 
-        .message-time {
-            font-size: 10px;
-            color: rgba(255, 255, 255, 0.4);
-            margin-top: 5px;
-            margin-left: 10px;
-        }
+        .message-time { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 5px; margin-left: 10px; }
+        .message-sent .message-time { text-align: right; }
 
-        .message-sent .message-time {
-            text-align: right;
-        }
-
-        /* Message Input */
         .message-input-area {
             padding: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            gap: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex; gap: 10px;
         }
 
         .message-input {
-            flex: 1;
-            padding: 12px 18px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 30px;
-            color: white;
-            font-size: 14px;
+            flex: 1; padding: 12px 18px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 30px; color: white; font-size: 14px;
         }
 
-        .message-input:focus {
-            outline: none;
-            border-color: rgba(209, 149, 36, 0.6);
-        }
+        .message-input:focus { outline: none; border-color: rgba(209,149,36,0.6); }
 
         .btn-send {
             padding: 12px 25px;
-            background: rgba(209, 149, 36, 0.85);
-            border: none;
-            border-radius: 30px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
+            background: rgba(209,149,36,0.85);
+            border: none; border-radius: 30px;
+            color: white; font-weight: bold; cursor: pointer;
         }
 
-        .btn-send:hover {
-            background: rgba(209, 149, 36, 1);
-        }
+        .btn-send:hover { background: rgba(209,149,36,1); }
 
         .no-conversation {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.5);
-            padding: 40px;
+            display: flex; align-items: center; justify-content: center;
+            height: 100%; text-align: center;
+            color: rgba(255,255,255,0.5); padding: 40px;
         }
 
         .new-chat-btn {
-            margin: 15px 20px;
-            padding: 10px;
-            background: rgba(209, 149, 36, 0.2);
-            border: 1px solid rgba(209, 149, 36, 0.4);
-            border-radius: 30px;
-            color: #ffd175;
-            text-align: center;
-            cursor: pointer;
-            text-decoration: none;
-            display: block;
-            font-size: 14px;
+            margin: 15px 20px; padding: 10px;
+            background: rgba(209,149,36,0.2);
+            border: 1px solid rgba(209,149,36,0.4);
+            border-radius: 30px; color: #ffd175;
+            text-align: center; cursor: pointer;
+            text-decoration: none; display: block; font-size: 14px;
         }
 
-        .new-chat-btn:hover {
-            background: rgba(209, 149, 36, 0.4);
-        }
+        .new-chat-btn:hover { background: rgba(209,149,36,0.4); }
 
         footer {
-            background: #1a1a2e;
-            color: white;
-            text-align: center;
-            padding: 30px;
+            background: #1a1a2e; color: white;
+            text-align: center; padding: 30px;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            .navbar-custom { border-radius: 24px; }
+            .nav-links { display: none; }
+            .hamburger-btn { display: flex; }
         }
 
         @media (max-width: 768px) {
-            .chat-wrapper {
-                flex-direction: column;
+            .navbar-custom {
+                margin: 16px auto 0 auto;
+                padding: 10px 20px;
+                width: calc(100% - 24px);
+                border-radius: 18px;
             }
-            .conversations-sidebar {
-                width: 100%;
-                max-height: 300px;
-            }
-            .nav-links { display: none; }
+            .chat-container { padding: 16px 12px; }
+            .chat-wrapper { flex-direction: column; border-radius: 16px; }
+            .conversations-sidebar { width: 100%; max-height: 260px; }
+            .message { max-width: 85%; }
         }
     </style>
 </head>
@@ -427,23 +401,52 @@ $users_result = mysqli_query($conn, $users_sql);
     <nav class="navbar-custom">
         <div class="nav-container">
             <a href="index.php" class="logo">UbuntuBay</a>
+
+            <!-- Desktop links -->
             <div class="nav-links">
                 <a href="index.php">Home</a>
                 <a href="products.php">Browse</a>
                 <a href="sell.php">Sell Item</a>
                 <a href="chat.php">Messages</a>
                 <a href="delivery.php">Delivery</a>
-                <a href="/UbuntuBay/admin/index.php">Admin Portal</a>
+                <a href="admin/index.php">Admin Portal</a>
                 <a href="about.php">About</a>
                 <a href="contact.php">Contact</a>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <a href="profile.php">Profile</a>
                     <a href="logout.php">Logout</a>
                 <?php else: ?>
-                    <a href="login.php" class="btn-outline-light">Login</a>
+                    <a href="login.php" class="btn-outline-light-custom">Login</a>
                     <a href="register.php" class="btn-warning-custom">Register</a>
                 <?php endif; ?>
             </div>
+
+            <!-- Hamburger -->
+            <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMenu()" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+
+        <!-- Mobile dropdown -->
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="index.php"> Home</a>
+            <a href="products.php"> Browse</a>
+            <a href="sell.php"> Sell Item</a>
+            <a href="chat.php"> Messages</a>
+            <a href="delivery.php"> Delivery</a>
+            <a href="about.php">ℹ About</a>
+            <a href="contact.php"> Contact</a>
+            <a href="admin/index.php"> Admin Portal</a>
+            <div class="mobile-divider"></div>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="profile.php"> Profile</a>
+                <a href="logout.php" style="color:#ff7b7b;">← Logout</a>
+            <?php else: ?>
+                <div class="mobile-auth">
+                    <a href="login.php" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:12px;">Login</a>
+                    <a href="register.php" style="background:rgba(209,149,36,0.25);border:1px solid rgba(209,149,36,0.4);color:#ffd175;border-radius:12px;">Register</a>
+                </div>
+            <?php endif; ?>
         </div>
     </nav>
 
@@ -458,8 +461,9 @@ $users_result = mysqli_query($conn, $users_sql);
                 <div class="conversations-list">
                     <?php if (mysqli_num_rows($conversations_result) > 0): ?>
                         <?php while ($conv = mysqli_fetch_assoc($conversations_result)): ?>
-                            <a href="chat.php?user=<?php echo $conv['other_user_id']; ?>" class="conversation-item <?php echo $selected_user_id == $conv['other_user_id'] ? 'active' : ''; ?>">
-                                <div class="conversation-avatar">👤</div>
+                            <a href="chat.php?user=<?php echo $conv['other_user_id']; ?>" 
+                               class="conversation-item <?php echo $selected_user_id == $conv['other_user_id'] ? 'active' : ''; ?>">
+                                <div class="conversation-avatar"></div>
                                 <div class="conversation-info">
                                     <div class="conversation-name"><?php echo htmlspecialchars($conv['other_user_name']); ?></div>
                                     <div class="conversation-last"><?php echo htmlspecialchars(substr($conv['last_message'], 0, 40)); ?></div>
@@ -486,7 +490,7 @@ $users_result = mysqli_query($conn, $users_sql);
                     $selected_user = mysqli_fetch_assoc($user_info_result);
                 ?>
                     <div class="chat-header">
-                        <div class="chat-header-avatar">👤</div>
+                        <div class="chat-header-avatar"></div>
                         <div class="chat-header-info">
                             <h4><?php echo htmlspecialchars($selected_user['name']); ?></h4>
                             <p>Online</p>
@@ -506,17 +510,18 @@ $users_result = mysqli_query($conn, $users_sql);
                                 </div>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <div style="text-align: center; color: rgba(255,255,255,0.5); padding: 40px;">
+                            <div style="text-align:center;color:rgba(255,255,255,0.5);padding:40px;">
                                 No messages yet. Send a message to start the conversation!
                             </div>
                         <?php endif; ?>
                     </div>
 
-                    <form method="POST" action="send_message.php" class="message-input-area">
+                    <form method="POST" action="send_msg.php" class="message-input-area">
                         <input type="hidden" name="receiver_id" value="<?php echo $selected_user_id; ?>">
-                        <input type="text" name="message" class="message-input" placeholder="Type a message..." required>
+                        <input type="text" name="message" class="message-input" placeholder="Type a message..." required autocomplete="off">
                         <button type="submit" class="btn-send">Send →</button>
                     </form>
+
                 <?php else: ?>
                     <div class="no-conversation">
                         <div>
@@ -533,24 +538,25 @@ $users_result = mysqli_query($conn, $users_sql);
 <!-- New Chat Modal -->
 <div class="modal fade" id="newChatModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1);">
-            <div class="modal-header" style="border-bottom-color: rgba(255,255,255,0.1);">
-                <h5 class="modal-title" style="color: white;">Start New Conversation</h5>
+        <div class="modal-content" style="background:rgba(0,0,0,0.9);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.1);">
+            <div class="modal-header" style="border-bottom-color:rgba(255,255,255,0.1);">
+                <h5 class="modal-title" style="color:white;">Start New Conversation</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <select id="newChatUser" class="form-control" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
-                    <option value="" style="background: #333;">Select a user</option>
+                <select id="newChatUser" class="form-control" style="background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);">
+                    <option value="" style="background:#333;">Select a user</option>
                     <?php while ($user = mysqli_fetch_assoc($users_result)): ?>
-                        <option value="<?php echo $user['user_id']; ?>" style="background: #333;">
+                        <option value="<?php echo $user['user_id']; ?>" style="background:#333;">
                             <?php echo htmlspecialchars($user['name']); ?> (<?php echo $user['province']; ?>)
                         </option>
                     <?php endwhile; ?>
                 </select>
             </div>
-            <div class="modal-footer" style="border-top-color: rgba(255,255,255,0.1);">
+            <div class="modal-footer" style="border-top-color:rgba(255,255,255,0.1);">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="startNewChat()" style="background: #ffd175; border: none; color: #000;">Start Chat</button>
+                <button type="button" class="btn" onclick="startNewChat()" 
+                        style="background:#ffd175;border:none;color:#000;">Start Chat</button>
             </div>
         </div>
     </div>
@@ -563,6 +569,30 @@ $users_result = mysqli_query($conn, $users_sql);
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // ── Hamburger menu ──
+    function toggleMenu() {
+        var btn = document.getElementById('hamburgerBtn');
+        var menu = document.getElementById('mobileMenu');
+        btn.classList.toggle('open');
+        menu.classList.toggle('open');
+    }
+
+    document.querySelectorAll('.mobile-menu a').forEach(function(link) {
+        link.addEventListener('click', function() {
+            document.getElementById('hamburgerBtn').classList.remove('open');
+            document.getElementById('mobileMenu').classList.remove('open');
+        });
+    });
+
+    document.addEventListener('click', function(e) {
+        var nav = document.querySelector('.navbar-custom');
+        if (!nav.contains(e.target)) {
+            document.getElementById('hamburgerBtn').classList.remove('open');
+            document.getElementById('mobileMenu').classList.remove('open');
+        }
+    });
+
+    // ── New conversation ──
     function startNewChat() {
         var userId = document.getElementById('newChatUser').value;
         if (userId) {
@@ -571,8 +601,8 @@ $users_result = mysqli_query($conn, $users_sql);
             alert('Please select a user');
         }
     }
-    
-    // Auto-scroll to bottom of messages
+
+    // ── Auto-scroll to bottom ──
     var messagesArea = document.getElementById('messages-area');
     if (messagesArea) {
         messagesArea.scrollTop = messagesArea.scrollHeight;
