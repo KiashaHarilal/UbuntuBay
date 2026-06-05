@@ -121,3 +121,34 @@ Designed purposefully for localized township realities:
 1. Clone the repository:
    ```bash
    git clone https://github.com/KiashaHarilal/UbuntuBay.git
+
+   ## How to View UbuntuBay Locally
+
+### Step 1: Set up XAMPP
+- Install XAMPP from https://www.apachefriends.org/
+- Open XAMPP Control Panel
+- Start **Apache** and **MySQL**
+
+### Step 2: Place the project folder
+- Copy the `UbuntuBay` folder to `C:\xampp\htdocs\`
+
+### Step 3: Import the database
+- Go to: `http://localhost/phpmyadmin`
+- Click **New** → Create database: `UbuntuBay_db`
+- Click **Import** → Choose `sql/UbuntuBay_db.sql` → Click **Go**
+
+### Step 4: Open the website
+- Go to: `http://localhost/UbuntuBay/index.php`
+
+### Login Details
+
+| Type | Email | Password |
+|------|-------|----------|
+| Admin (for lecturer) | admin@ubuntubay.co.za | admin123 |
+| Regular users | Register a new account | Choose your own |
+
+### Notes for lecturer
+- Users must register and login to buy/sell products
+- Admin has full access to manage users, listings, and messages
+- All code is in the zipped folder and GitHub repository
+
